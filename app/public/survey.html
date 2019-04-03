@@ -135,47 +135,60 @@
 </html>
 
 <script type="text/javascript">
-  // In this code below we create the Front-end JavaScript which "POSTS" our form data to our express server.
-  // In essence, when the user hits submit, jQuery grabs all of the fields then sends a post request to our api
-  // Our api recognizes the route (/api/tables)... and then runs the associated code (found in api-routes.js).
-  // In this case the associated code "saves" the data to the table-data.js file or waitinglist-data.js file
-
+ 
   $("#submit").on("click", function(event) {
     event.preventDefault();
-
-    // Here we grab the form elements
     var newPerson = {
       name: $("#name").val().trim(),
-      scores: [   parseInt($("#q1").val()),
-                  parseInt($("#q2").val()),                 
-                  parseInt($("#q3").val()),                 
-                  parseInt($("#q4").val()),                 
-                  parseInt($("#q5").val()),                 
-                  parseInt($("#q6").val()),                 
-                  parseInt($("#q7").val()),                 
-                  parseInt($("#q8").val()),                 
-                  parseInt($("#q9").val()),                 
-                  parseInt($("#q10").val()),                 
+      scores: [   ($("#q1").val()),
+                  ($("#q2").val()),                 
+                  ($("#q3").val()),                 
+                  ($("#q4").val()),                 
+                  ($("#q5").val()),                 
+                  ($("#q6").val()),                 
+                  ($("#q7").val()),                 
+                  ($("#q8").val()),                 
+                  ($("#q9").val()),                 
+                  ($("#q10").val()),                 
                  ]
     };
+    
+    $.ajax({
+          url:"/api/person" ,
+          method: "GET"
+        }).then(function(response) {
 
-    //console.log(newPerson);
+        
+          console.log(response);
+          //console.log(newPerson);
+          //console.log(response[1].scores);
+          for(var i=0;i<response.length;i++){
+            var diffResult=[];
+            for (var j=0;j<newPerson.scores.length;j++){
+              var diff=Math.abs(parseInt(response[i].scores[j])-parseInt(newPerson.scores[j]));
+              diffResult.push(diff);
+              console.log(diff);
 
-    // This line is the magic. It"s very similar to the standard ajax function we used.
-    // Essentially we give it a URL, we give it the object we want to send, then we have a "callback".
-    // The callback is the response of the server. In our case, we set up code in api-routes that "returns" true or false
-    // depending on if a tables is available or not.
+              //console.log(response[i].scores[j]);
+              //console.log(newPerson.scores[j]);
+            }
+            return diffResult;
+            console.log(diffResult);
+
+          }
+        });      
+
 
     $.post("/api/friends", newPerson,
       function(data) {
-
+        
         if (data) {
+        
           alert("Yay! You are being paired!");
         }
         else {
           alert("Sorry there is no match");
         }
-        // Clear the form when submitting
         $("#name").val(" "),
         $("#q1").val(" "),
         $("#q2").val(" "),                 
