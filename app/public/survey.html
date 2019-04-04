@@ -22,7 +22,7 @@
     <h3><strong>Question 1</strong></h3>
     <h4> I see myself as extraverted, enthusiastic.</h4>
     <select class="chosen-select" id="q1">
-        <option value=""></option>
+        <option value="0">No opinion</option>
         <option value="1">1 (Strongly Disagree)</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -33,7 +33,7 @@
           <h3><strong>Question 2</strong></h3>
           <h4>  I see myself as critical, quarrelsome.</h4>
           <select class="chosen-select" id="q2">
-              <option value=""></option>
+              <option value="0">No opinion</option>
               <option value="1">1 (Strongly Disagree)</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -43,7 +43,7 @@
                 <h3><strong>Question 3</strong></h3>
                 <h4>I see myself as dependable, self-disciplined. </h4>
                 <select class="chosen-select" id="q3">
-                    <option value=""></option>
+                    <option value="0">No opinion</option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -53,7 +53,7 @@
                       <h3><strong>Question 4</strong></h3>
                       <h4>I see myself as anxious, easily upset. </h4>
                       <select class="chosen-select" id="q4">
-                          <option value=""></option>
+                          <option value="0">No opinion</option>
                           <option value="1">1 (Strongly Disagree)</option>
                           <option value="2">2</option>
                           <option value="3">3</option>
@@ -63,7 +63,7 @@
                             <h3><strong>Question 5</strong></h3>
                             <h4> I see myself as open to new experiences, complex.</h4>
                             <select class="chosen-select" id="q5">
-                                <option value=""></option>
+                                <option value="0">No opinion</option>
                                 <option value="1">1 (Strongly Disagree)</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -73,7 +73,7 @@
                                   <h3><strong>Question 6</strong></h3>
                                   <h4> I see myself as reserved, quiet. </h4>
                                   <select class="chosen-select" id="q6">
-                                      <option value=""></option>
+                                      <option value="0">No opinion</option>
                                       <option value="1">1 (Strongly Disagree)</option>
                                       <option value="2">2</option>
                                       <option value="3">3</option>
@@ -83,7 +83,7 @@
                                         <h3><strong>Question 7</strong></h3>
                                         <h4> I see myself as sympathetic, warm.</h4>
                                         <select class="chosen-select" id="q7">
-                                            <option value=""></option>
+                                            <option value="0">No opinion</option>
                                             <option value="1">1 (Strongly Disagree)</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -93,7 +93,7 @@
                                               <h3><strong>Question 8</strong></h3>
                                               <h4> I see myself as disorganized, careless. </h4>
                                               <select class="chosen-select" id="q8">
-                                                  <option value=""></option>
+                                                  <option value="0">No opinion</option>
                                                   <option value="1">1 (Strongly Disagree)</option>
                                                   <option value="2">2</option>
                                                   <option value="3">3</option>
@@ -103,7 +103,7 @@
                                                     <h3><strong>Question 9</strong></h3>
                                                     <h4>I see myself as calm, emotionally stable. </h4>
                                                     <select class="chosen-select" id="q9">
-                                                        <option value=""></option>
+                                                        <option value="0">No opinion</option>
                                                         <option value="1">1 (Strongly Disagree)</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
@@ -113,7 +113,7 @@
                                                           <h3><strong>Question 10</strong></h3>
                                                           <h4>I see myself as conventional, uncreative. </h4>
                                                           <select class="chosen-select" id="q10">
-                                                              <option value=""></option>
+                                                              <option value="0">No opinion</option>
                                                               <option value="1">1 (Strongly Disagree)</option>
                                                               <option value="2">2</option>
                                                               <option value="3">3</option>
@@ -138,6 +138,7 @@
  
   $("#submit").on("click", function(event) {
     event.preventDefault();
+    //we can add name validation here
     var newPerson = {
       name: $("#name").val().trim(),
       scores: [   ($("#q1").val()),
@@ -160,35 +161,29 @@
 
         
           console.log(response);
-          //console.log(newPerson);
-          //console.log(response[1].scores);
+          let diffArray=[];
+          let bestMatch=9999;
           for(var i=0;i<response.length;i++){
-            var diffResult=[];
+            var diffResult=0;
             for (var j=0;j<newPerson.scores.length;j++){
-              var diff=Math.abs(parseInt(response[i].scores[j])-parseInt(newPerson.scores[j]));
-              diffResult.push(diff);
-              console.log(diff);
-
-              //console.log(response[i].scores[j]);
-              //console.log(newPerson.scores[j]);
+              diffResult+=Math.abs(parseInt(response[i].scores[j])-parseInt(newPerson.scores[j]));
+              
             }
-            return diffResult;
-            console.log(diffResult);
-
+            //console.log(diffResult);
+            diffArray.push(diffResult);
+           
           }
+          var minDiffvalue=Math.min(...diffArray);
+          var minIndex=diffArray.indexOf(minDiffvalue);
+          alert("You have a match with " + response[minIndex].name);
+
+          location.reload();
         });      
 
 
     $.post("/api/friends", newPerson,
       function(data) {
         
-        if (data) {
-        
-          alert("Yay! You are being paired!");
-        }
-        else {
-          alert("Sorry there is no match");
-        }
         $("#name").val(" "),
         $("#q1").val(" "),
         $("#q2").val(" "),                 
