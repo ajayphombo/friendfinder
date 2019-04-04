@@ -163,7 +163,7 @@
           console.log(response);
           let diffArray=[];
           let bestMatch=9999;
-          for(var i=0;i<response.length;i++){
+          for(var i=0;i<response.length-1;i++){
             var diffResult=0;
             for (var j=0;j<newPerson.scores.length;j++){
               diffResult+=Math.abs(parseInt(response[i].scores[j])-parseInt(newPerson.scores[j]));
